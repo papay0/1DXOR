@@ -43,9 +43,3 @@ if __name__ == '__main__':
 
     indexer(dict, stemmer)
     db.docs.insert(dict)
-
-'''
-TODO:
-DONE --> Stemmer pour mettre tous les mots au singulier etc
-stemmer aussi la recherche du coup OK
-'''
