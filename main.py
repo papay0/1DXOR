@@ -7,13 +7,12 @@ from nltk.corpus import stopwords
 
 def insert(document_name, words, database):
     for word in words:
-        if word in database:
+        if word in database and document_name not in database[word]:
             database[word].append(document_name)
         else:
             database[word] = [document_name]
     print(document_name)
     print(words)
-    print(database)
     print(" ")
 
 
@@ -24,17 +23,29 @@ def parser(file_content_raw):
     tokenizer = RegexpTokenizer(r'\w+')
     stop = stopwords.words(config.LANG)
     words = [i for i in tokenizer.tokenize(text) if i not in stop]
-    #print(list(set(words)), end="\n\n")
     return words
 
-def indexer(database):
+def indexer(database, stemmer):
     directory = config.DIRECTORY
     for file in os.listdir(directory):
         if file.endswith(config.EXTENSION):
             f = open(directory+file, 'r')
-            words = parser(f.read())
+            words = [stemmer.stem(word) for word in parser(f.read())]
             insert(os.path.basename(f.name), words, database)
 
 if __name__ == '__main__':
-    db = {}
-    indexer(db)
+    dict = {}
+
+    client = config.CLIENT
+    stemmer = config.STEMMER
+    db = client.dict_database
+    db_docs = db.docs
+
+    indexer(dict, stemmer)
+    db.docs.insert(dict)
+
+'''
+TODO:
+DONE --> Stemmer pour mettre tous les mots au singulier etc
+stemmer aussi la recherche du coup OK
+'''
