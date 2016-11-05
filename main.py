@@ -1,19 +1,21 @@
 import os
 import config
+import time
 
 from bs4 import BeautifulSoup
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 from collections import Counter
 
-def insert(document_name, words, database):
+# build the dictionnary with this schema {'word1': ['doc1', 'doc2', 'word2': ['doc4', 'doc7']]}
+def build_dict_words(document_name, words, database):
     for word in words:
         if word in database and document_name not in database[word]:
             database[word].append(document_name)
         else:
             database[word] = [document_name]
 
-
+# parse the content of the website - return the words filtered (without the stopwords, stemmer)
 def parser(file_content_raw, stemmer):
     soup = BeautifulSoup(file_content_raw, config.TYPE_PARSER)
     [[s.extract() for s in soup(balise)] for balise in config.TAG_NOT_ALLOWED]
@@ -22,32 +24,45 @@ def parser(file_content_raw, stemmer):
     stop = stopwords.words(config.LANG)
     words = [stemmer.stem(word) for word in tokenizer.tokenize(text)]
     words = [i.lower() for i in words if i.lower() not in stop]
-    #print(words)
     return words
 
-def indexer(database_words, database_documents, stemmer):
+# for each file, insert into DB of documents, build dictionnary of words
+def indexer(database_words, stemmer):
     directory = config.DIRECTORY
     for file in os.listdir(directory):
         if file.endswith(config.EXTENSION):
             f = open(directory+file, 'r')
             name_document = os.path.basename(f.name).split('.')[:-1][0] # Have only the name without the extension
             words = parser(f.read(), stemmer)
-            database_documents[name_document] = dict(Counter(words))
-            insert(name_document, words, database_words)
+            insert_db_documents(name_document, dict(Counter(words))) # db.key_documents: {_id: D1, words: ['coucou': 2, 'salut": 3, ...]}
+            build_dict_words(name_document, words, database_words) # database_words: {'word': [D1, D2, Dn...]}
 
-if __name__ == '__main__':
-    dict_key_word = {}
-    dict_key_document = {}
+# insert into DB of documents: {'_id': D1, 'words': {word1: 2, word2: 7, ...}})
+def insert_db_documents(name_document, words_with_occurence):
+    client = config.CLIENT
+    DB = client.index_database
+    DB.key_documents.insert({'_id': name_document, 'words': words_with_occurence})
+
+# insert into DB of words: {_id: word1, documents: [D1, D4, D7]}
+def insert_db_words(database_words):
+    client = config.CLIENT
+    DB = client.index_database
+    for word in database_words:
+        DB.key_words.insert({'_id': word, 'documents': database_words[word]})
+
+def solver():
+    database_words = {}
 
     client = config.CLIENT
-    stemmer = config.STEMMER
     db = client.index_database
-    db_docs = db.key_documents
-    db_words = db.key_words
 
-    indexer(dict_key_word, dict_key_document, stemmer)
-    print("Ok")
-    #print(dict_key_word)
-    #print(dict_key_document)
-    db.key_documents.insert(dict_key_document)
-    db.key_words.insert(dict_key_word)
+    indexer(database_words, config.STEMMER)
+    insert_db_words(database_words)
+
+    db.key_words.insert(database_words)
+
+if __name__ == '__main__':
+    start = time.time()
+    solver()
+    end = time.time()
+    print(end-start, "seconds")

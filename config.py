@@ -8,3 +8,4 @@ TAG_NOT_ALLOWED = ['script', 'style']
 TYPE_PARSER = 'html.parser'
 CLIENT= MongoClient('localhost', 27017)
 STEMMER = SnowballStemmer('french')
+DB = CLIENT.index_database

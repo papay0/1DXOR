@@ -9,6 +9,21 @@ Installation
 > - python3
 > - BeautifulSoup
 > - nltk
+> - node.js
+> - (express@4.14)
+> - (mongoose@4.5.8)
+
+MongoDB
+-------
+> **Good to know?**
+>
+> - Show all 'tables': show dbs
+> - Use a specidif one: use db1
+> - See which database I use: db
+> - Show all the collections: show collections
+> - Delete a collection: db.my_collection.drop()
+> - Print content of a collection: db.my_collection.find();
+> - Print content of a collection, but more beautifully: db.my_collection.find().pretty();
 
 TODO
 -------------
