@@ -1,6 +1,9 @@
 Welcome to 1DXOR!
 ===================
 
+- IN DEV -
+==========
+
 Installation
 -------------
 > **What do you need?**
@@ -10,7 +13,6 @@ Installation
 > - BeautifulSoup
 > - nltk
 > - node.js
-> - (express@4.14)
 
 Run it
 ------
