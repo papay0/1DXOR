@@ -11,7 +11,17 @@ Installation
 > - nltk
 > - node.js
 > - (express@4.14)
-> - (mongoose@4.5.8)
+
+Run it
+------
+
+```
+git clone https://github.com/papay0/1DXOR.git
+cd 1DXOR
+npm install
+npm start
+Go to http://0.0.0.0:4000/
+```
 
 MongoDB
 -------
