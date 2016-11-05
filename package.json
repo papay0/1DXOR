@@ -1,0 +1,23 @@
+{
+  "name": "1dxor",
+  "version": "1.0.0",
+  "description": "Welcome to 1DXOR! ===================",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/papay0/1DXOR.git"
+  },
+  "author": "Arthur Papailhau && Frank Bessou",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/papay0/1DXOR/issues"
+  },
+  "homepage": "https://github.com/papay0/1DXOR#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "mongoose": "^4.5.8"
+  }
+}
