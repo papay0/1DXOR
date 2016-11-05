@@ -16,12 +16,20 @@ Run it
 ------
 
 ```
-git clone https://github.com/papay0/1DXOR.git
-cd 1DXOR
-npm install
-npm start
+$ git clone https://github.com/papay0/1DXOR.git
+$ cd 1DXOR
+$ npm install
+$ cd indexer/
+$ python3 main.py
+$ cd ..
+$ npm start
 Go to http://0.0.0.0:4000/
 ```
+
+Use it
+------
+You can for the moment query http://0.0.0.0:4000/indexor/your_word
+The result will be a page with the different documents where 'your word' is in it.
 
 MongoDB
 -------
