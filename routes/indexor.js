@@ -8,7 +8,7 @@ router.get('/:word', function(req, res, next) {
   collection.find({'_id': word}).toArray(function(err, result) {
     console.log('result: '+result);
     if (!Object.keys(result).length) {
-      res.render('documents', { documents: []});
+      res.render('documents', { documents: ['empty']});
     } else {
       var documents = result[0].documents;
       console.log(documents);

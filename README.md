@@ -33,7 +33,7 @@ The result will be a page with the different documents where 'your word' is in i
 
 MongoDB
 -------
-> **Good to know?**
+> **Good to know**
 >
 > - Show all 'tables': show dbs
 > - Use a specidif one: use db1

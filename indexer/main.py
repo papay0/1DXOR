@@ -39,22 +39,20 @@ def indexer(database_words, stemmer):
 
 # insert into DB of documents: {'_id': D1, 'words': {word1: 2, word2: 7, ...}})
 def insert_db_documents(name_document, words_with_occurence):
-    client = config.CLIENT
-    DB = client.index_database
-    DB.key_documents.insert({'_id': name_document, 'words': words_with_occurence})
+    db.key_documents.insert({'_id': name_document, 'words': words_with_occurence})
 
 # insert into DB of words: {_id: word1, documents: [D1, D4, D7]}
 def insert_db_words(database_words):
-    client = config.CLIENT
-    DB = client.index_database
     for word in database_words:
-        DB.key_words.insert({'_id': word, 'documents': database_words[word]})
+        db.key_words.insert({'_id': word, 'documents': database_words[word]})
+
+def cleanDB():
+    db.key_words.drop()
+    db.key_documents.drop()
 
 def solver():
     database_words = {}
-
-    client = config.CLIENT
-    db = client.index_database
+    cleanDB()
 
     indexer(database_words, config.STEMMER)
     insert_db_words(database_words)
@@ -62,6 +60,8 @@ def solver():
     db.key_words.insert(database_words)
 
 if __name__ == '__main__':
+    global db
+    db = config.DB
     start = time.time()
     solver()
     end = time.time()
