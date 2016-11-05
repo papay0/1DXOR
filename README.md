@@ -45,6 +45,47 @@ MongoDB
 > - Print content of a collection: db.my_collection.find();
 > - Print content of a collection, but more beautifully: db.my_collection.find().pretty();
 
+Schema Database
+---------------
+
+key_documents:
+```
+{
+    "_id" : "Document1",
+    "words" : {
+        "day" : 1,
+        "over" : 2,
+        "sunrise": 7,
+        "computer": 1
+    }
+},
+{
+    "_id" : "Document2",
+    "words" : {
+        "computer" : 3,
+        "network" : 1,
+        "database": 9
+    }
+}
+```
+
+key_words:
+```
+{
+    "_id" : "computer",
+    "documents" : [ 
+        "Document1",
+        "Document2"
+    ]
+},
+{
+    "_id" : "sunrise",
+    "documents" : [ 
+        "Document1"
+    ]
+}
+```
+
 TODO
 -------------
 > - Use a stemmer for the search as well
