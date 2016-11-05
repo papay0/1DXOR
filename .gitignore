@@ -1,5 +1,6 @@
 .git
 .idea
+npm-debug.log
 node_modules
 __pycache__
 
