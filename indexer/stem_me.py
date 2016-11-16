@@ -7,9 +7,9 @@ from nltk.stem.snowball import SnowballStemmer
 stemmer = SnowballStemmer('french')
 stop = stopwords.words('french')
 
-sentence = sys.argv[1]
+sentence = ' '.join(sys.argv[1:])
 tokenizer = RegexpTokenizer(r'\w+')
 words = [stemmer.stem(word) for word in tokenizer.tokenize(sentence)]
 words = [i.lower() for i in words if i.lower() not in stop]
-print(" ".join(words))
+print(" ".join(words), end="")
 sys.stdout.flush()

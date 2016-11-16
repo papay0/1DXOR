@@ -2,3 +2,9 @@ extends layout
 
 block content
   p Welcome to #{title}
+  form(action="/indexor/", method="get", name="words")
+        div.input
+            span.label Search input: 
+            input(type="text", name="words")
+        div.actions
+            input(type="submit", value="Search")
