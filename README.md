@@ -46,7 +46,7 @@ MongoDB
 Schema Database
 ---------------
 
-key_documents:
+documents:
 ```
 {
     "_id" : "Document1",
@@ -67,7 +67,7 @@ key_documents:
 }
 ```
 
-key_words:
+words:
 ```
 {
     "_id" : "computer",
@@ -86,5 +86,3 @@ key_words:
 
 TODO
 -------------
-> - Use a stemmer for the search as well
-> - Create a full stack (Express, MongoDB, Angular2: [docs](http://adrianmejia.com/blog/2014/10/01/creating-a-restful-api-tutorial-with-nodejs-and-mongodb/))

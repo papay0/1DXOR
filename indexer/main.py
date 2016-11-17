@@ -10,10 +10,16 @@ from collections import Counter
 # build the dictionnary with this schema {'word1': ['doc1', 'doc2', 'word2': ['doc4', 'doc7']]}
 def build_dict_words(document_name, words, database):
     for word in words:
-        if word in database and document_name not in database[word]:
-            database[word].append(document_name)
+        if word not in database:
+            database[word] = [{document_name:1}]
         else:
-            database[word] = [document_name]
+            found = False
+            for document_obj in database[word]:
+                if document_name in document_obj:
+                    document_obj[document_name] += 1
+                    found = True
+            if not found:
+                database[word].append({document_name: 1})
 
 # parse the content of the website - return the words filtered (without the stopwords, stemmer)
 def parser(file_content_raw, stemmer):

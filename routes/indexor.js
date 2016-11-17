@@ -9,12 +9,12 @@ router.get('/', function (req, res, next) {
   var sentence = req.query.words;
   var cmd = 'python3 indexer/stem_me.py ' + sentence;
   var p = new Promise((resolve, error) => {
-    exec(cmd, function (err, stdout, stderr) {
+    exec(cmd, function (err, stdout, stderr) { // stem sentence with python code
       if (err) error(err);
       resolve(stdout);
     });
   }
-  ).then((res) => {
+  ).then((res) => { // search into bdd for every word
     var arrayOfPromises = [];
     var sentenceStemmed = res.split(" ");
     for (var i = 0; i < sentenceStemmed.length; i++) {
@@ -23,25 +23,25 @@ router.get('/', function (req, res, next) {
       console.log("word: " + sentenceStemmed[i]);
     }
     return Promise.all(arrayOfPromises);
-  }).then(result => {
+  }).then(result => { // sort by frequency and display result
     var resultMerged = [].concat.apply([], result);
-    console.log("resultMerged: "+resultMerged);
-    console.log("result: " + sortByFrequency(resultMerged));
-    res.render('documents', { documents: sortByFrequency(resultMerged) });
-  });
+    res.render('documents', { documents: sortByFrequency_old(resultMerged) });
+  }).catch(function(e) {
+    res.render('documents', {documents: ["ERROR: "+e]});
+});
 
-  function sortByFrequency(array) {
+  function sortByFrequency_old(array) {
     var frequency = {};
-
-    array.forEach(function (value) { frequency[value] = 0; });
-
-    var uniques = array.filter(function (value) {
-      return ++frequency[value] == 1;
+    array.forEach(function (value) {
+      var key = Object.keys(value);
+      if (key in frequency) {
+        frequency[key] += value[key];
+      } else {
+        frequency[key] = value[key];
+      }
     });
-
-    return uniques.sort(function (a, b) {
-      return frequency[b] - frequency[a];
-    });
+    console.log("frequency: "+JSON.stringify(frequency));
+    return Object.keys(frequency).sort(function (a, b){return frequency[b]-frequency[a]}); // sort decreasing order
   }
 
   function async_find(word) {
@@ -53,7 +53,7 @@ router.get('/', function (req, res, next) {
             resolve([]);
           } else {
             var documents = result[0].documents;
-            console.log("res find: "+documents);
+            console.log("["+word+"]res find: "+JSON.stringify(documents));
             resolve(documents);
           }
         });
