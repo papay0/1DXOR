@@ -39,17 +39,23 @@ def indexer(database_words, stemmer):
         if file.endswith(config.EXTENSION):
             f = open(directory+file, 'r')
             name_document = os.path.basename(f.name).split('.')[:-1][0] # Have only the name without the extension
-            words = parser(f.read(), stemmer)
+            try:
+                words = parser(f.read(), stemmer)
+                # print("file OK: ", f.name)
+            except:
+                print("Oups, UTF8?, file: ", f.name)
             insert_db_documents(name_document, dict(Counter(words))) # db.documents: {_id: D1, words: ['coucou': 2, 'salut": 3, ...]}
             build_dict_words(name_document, words, database_words) # database_words: {'word': [D1, D2, Dn...]}
 
 # insert into DB of documents: {'_id': D1, 'words': {word1: 2, word2: 7, ...}})
 def insert_db_documents(name_document, words_with_occurence):
+    # print("name document: ", name_document)
     db.documents.insert({'_id': name_document, 'words': words_with_occurence})
 
 # insert into DB of words: {_id: word1, documents: [D1, D4, D7]}
 def insert_db_words(database_words):
     for word in database_words:
+        print("word: ", word)
         db.words.insert({'_id': word, 'documents': database_words[word]})
 
 def cleanDB():
@@ -63,6 +69,7 @@ def solver():
     indexer(database_words, config.STEMMER)
     insert_db_words(database_words)
 
+    print(database_words)
     db.words.insert(database_words)
 
 if __name__ == '__main__':
