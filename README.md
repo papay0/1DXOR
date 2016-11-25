@@ -71,16 +71,16 @@ words:
 ```
 {
     "_id" : "computer",
-    "documents" : [ 
-        "Document1",
-        "Document2"
-    ]
+    "documents" : {
+        "Document1":1,
+        "Document2": 12
+    }
 },
 {
     "_id" : "sunrise",
-    "documents" : [ 
-        "Document1"
-    ]
+    "documents" : {
+        "Document1":15
+    }
 }
 ```
 

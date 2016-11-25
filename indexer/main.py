@@ -7,7 +7,7 @@ from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 from collections import Counter
 
-# build the dictionnary with this schema {'word1': ['doc1', 'doc2', 'word2': ['doc4', 'doc7']]}
+# build the dictionnary with this schema {'word1': ['doc1', 'doc2'], 'word2': ['doc4', 'doc7']}
 def build_dict_words(document_name, words, database):
     for word in words:
         if word not in database:
@@ -29,7 +29,7 @@ def parser(file_content_raw, stemmer):
     tokenizer = RegexpTokenizer(r'\w+')
     stop = stopwords.words(config.LANG)
     words = [stemmer.stem(word) for word in tokenizer.tokenize(text)]
-    words = [i.lower() for i in words if i.lower() not in stop]
+    words = [i.lower() for i in words if i.lower() not in stop and i != "_id"]
     return words
 
 # for each file, insert into DB of documents, build dictionnary of words
