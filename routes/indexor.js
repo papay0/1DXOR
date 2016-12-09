@@ -9,18 +9,20 @@ router.get('/', function (req, res, next) {
 	// Call a python script in order to stemm and remove_stop_word from the input sentence
 	var documentArray = null;
 	var sentence = req.query.words;
-	var p = query(sentence).then((result) => {
+	var documentsNumber = 0;
+	var p =  db.get().collection('documents').count().then(res => documentsNumber = res).then(() =>  
+	query(sentence).then((result) => {
 		
-		matchingDocuments = createDocumentArray(result);
+		var matchingDocuments = createDocumentArray(result);
 		
-		matrix = buildMatrix(result, matchingDocuments);
-		
-		scores = computeScores(matrix, matchingDocuments);
+		var matrix = buildMatrix(result, matchingDocuments);
+		var Q = computeIDF(result);
+		var scores = computeScores(matrix, matchingDocuments, Q);
 		
 		scores = sortedScores(scores);
 		console.log(scores);
 		res.render('documents', {documents: scores})
-	});
+	}));
 	/*	var resultMerged = [].concat.apply([], result);
 		console.log(resultMerged);
 		res.render('documents', { documents: sortByFrequency_old(resultMerged) });
@@ -135,14 +137,24 @@ router.get('/', function (req, res, next) {
 		return mat;
 	}
 
-	function computeScores(matrix, matchingDocuments) {
+	function computeScores(matrix, matchingDocuments, Q) {
 		var scores = {};
 		for (var documentId = 0; documentId < matchingDocuments.size()  ; documentId++) {
 			var score = 0;
-			matrix.subset(math.index(documentId,[0,matrix.size()[1]-1])).map((val)=>{score+=val});
+			// subset(math.index(documentId,[0,matrix.size()[1]-1]))
+			score = matrix._data[documentId].reduce((a, b, i) => a+b*Q[i]);
 			scores[matchingDocuments.getName(documentId)]=score;
 		}
 		return scores;
+	}
+
+	function IDF(wordDocuments) {
+		var idf = []
+		for (var docs of wordDocuments) {
+			idf.push(log(documentNumber/docs.length))
+		}
+
+		return idf;
 	}
 
 	function sortedScores(scores) {
