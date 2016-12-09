@@ -45,12 +45,18 @@ class HTMLBundleIndexer:
 
         return indexByWords
 
+def cleanDB(db):
+    db.words.drop()
+    db.documents.drop()
+
 if __name__ == '__main__':
     db = config.DB
+    cleanDB(db)
+    db.run
     indexer = HTMLBundleIndexer(HTMLFileIndexer(config))
     documents, words = indexer.run(config.DIRECTORY)
+    # db.documents.ensure_index('documents', unique=True)
     db.documents.insert(documents)
-    db.documents.ensure_index('documents', unique=True)
     db.words.insert(words)
     pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(results)

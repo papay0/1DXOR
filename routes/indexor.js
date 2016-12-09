@@ -10,9 +10,13 @@ router.get('/', function (req, res, next) {
 	var documentArray = null;
 	var sentence = req.query.words;
 	var p = query(sentence).then((result) => {
+		
 		matchingDocuments = createDocumentArray(result);
+		
 		matrix = buildMatrix(result, matchingDocuments);
+		
 		scores = computeScores(matrix, matchingDocuments);
+		
 		scores = sortedScores(scores);
 		console.log(scores);
 		res.render('documents', {documents: scores})
@@ -78,38 +82,40 @@ router.get('/', function (req, res, next) {
 		});
 	}
 
-	class MatchingDocuments {
-		constructor() {
+	MatchingDocuments = (function() {
+		function MatchingDocuments() {
 			this.documentsIDs = {}
 			this.documents = []
 		}
 
-		addDocument(documentName) {
+		MatchingDocuments.prototype.addDocument = function(documentName)  {
 			if (this.documentsIDs[documentName]===undefined) {
 				this.documentsIDs[documentName] = this.documents.length
 					this.documents.push(documentName);
 			}
 		}
 
-		getName(index) {
+		MatchingDocuments.prototype.getName = function(index) {
 			return this.documents[index];
 		}
 
-		getIndex(name) {
+		MatchingDocuments.prototype.getIndex = function(name) {
 			return this.documentsIDs[name];
 		}
 
-		size() {
+		MatchingDocuments.prototype.size = function() {
 			return this.documents.length;
 		}
-	}
+		return MatchingDocuments;
+	})();
 
 	function createDocumentArray(results) {
 			var matchingDocuments = new MatchingDocuments()	
-
+			
 			for (var wordResults of results) {
 				for (document of wordResults) {
 					matchingDocuments.addDocument(document.name);
+					
 				}
 			}
 

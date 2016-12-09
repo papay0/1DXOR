@@ -13,6 +13,7 @@
     "debug": "~2.2.0",
     "express": "~4.14.0",
     "jade": "~1.11.0",
+    "mathjs": "^3.8.0",
     "mongodb": "^2.2.11",
     "morgan": "~1.7.0",
     "node-matrix": "^0.1.1",
