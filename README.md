@@ -28,8 +28,7 @@ Go to http://0.0.0.0:4000/
 Use it
 ------
 
-Go to http://0.0.0.0:4000/, type a sentence into the search bar and enjoy the result.
-(Document with the maximum of words from the input search comes first)
+Go to http://0.0.0.0:4000/, type a sentence into the search bar, select the way you want to search (normal, IDF) and enjoy the result.
 
 MongoDB
 -------
