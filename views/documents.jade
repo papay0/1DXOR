@@ -1,8 +1,10 @@
 extends layout
 
 block content
-  p # Documents #
-  p ---
-    each doc in {documents}
-     p #{doc}
+	p # Documents #
+	p ---
+	ul
+		each doc in documents
+			li= doc
+
 
