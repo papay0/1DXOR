@@ -16,7 +16,7 @@ router.get('/', function (req, res, next) {
 		var matchingDocuments = createDocumentArray(result);
 		
 		var matrix = buildMatrix(result, matchingDocuments);
-		var Q = computeIDF(result);
+		var Q = IDF(result);
 		var scores = computeScores(matrix, matchingDocuments, Q);
 		
 		scores = sortedScores(scores);
@@ -142,7 +142,7 @@ router.get('/', function (req, res, next) {
 		for (var documentId = 0; documentId < matchingDocuments.size()  ; documentId++) {
 			var score = 0;
 			// subset(math.index(documentId,[0,matrix.size()[1]-1]))
-			score = matrix._data[documentId].reduce((a, b, i) => a+b*Q[i]);
+			matrix._data[documentId].map((a, i) => score+=a*Q[i]);
 			scores[matchingDocuments.getName(documentId)]=score;
 		}
 		return scores;
@@ -151,9 +151,9 @@ router.get('/', function (req, res, next) {
 	function IDF(wordDocuments) {
 		var idf = []
 		for (var docs of wordDocuments) {
-			idf.push(log(documentNumber/docs.length))
+			idf.push(Math.log(documentsNumber/docs.length))
 		}
-
+		console.log(idf);
 		return idf;
 	}
 
