@@ -9,6 +9,7 @@ router.get('/', function (req, res, next) {
 	// Call a python script in order to stemm and remove_stop_word from the input sentence
 	var documentArray = null;
 	var sentence = req.query.words;
+	var ponderation = req.query.ponderation;
 	var documentsNumber = 0;
 	var p =  db.get().collection('documents').count().then(res => documentsNumber = res).then(() =>  
 	query(sentence).then((result) => {
@@ -16,7 +17,7 @@ router.get('/', function (req, res, next) {
 		var matchingDocuments = createDocumentArray(result);
 		
 		var matrix = buildMatrix(result, matchingDocuments);
-		var Q = IDF(result);
+		var Q = IDF(result, ponderation);
 		var scores = computeScores(matrix, matchingDocuments, Q);
 		
 		scores = sortedScores(scores);
@@ -148,10 +149,14 @@ router.get('/', function (req, res, next) {
 		return scores;
 	}
 
-	function IDF(wordDocuments) {
+	function IDF(wordDocuments, ponderation) {
 		var idf = []
 		for (var docs of wordDocuments) {
-			idf.push(Math.log(documentsNumber/docs.length))
+			if (ponderation == 0) {
+				idf.push(1)
+			} else {
+				idf.push(Math.log(documentsNumber/docs.length))
+			}
 		}
 		console.log(idf);
 		return idf;

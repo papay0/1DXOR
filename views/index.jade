@@ -6,5 +6,8 @@ block content
         div.input
             span.label Search input: 
             input(type="text", name="words")
+            select(name='ponderation')
+                option(value=0, selected=true) Naif
+                option(value=1) IDF
         div.actions
             input(type="submit", value="Search")
