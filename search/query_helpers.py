@@ -2,12 +2,16 @@
 """ tools to manipulate queries """
 import sys
 
-def to_query(argv):
+def argv_to_query(argv):
     """ transform argv into a set of words """
-    query = " ".join(argv[1:])
-    query = [x.strip() for x in query.split(',')]
+    query_string = " ".join(argv[1:])
+    query = text_to_query(query_string)
+    return query
+
+def text_to_query(query_string):
+    """ transform argv into a set of words """
+    query = [x.strip() for x in query_string.split(',')]
     return set(query)
 
-
 if __name__ == "__main__":
-    print(to_query(sys.argv))
+    print(argv_to_query(sys.argv))

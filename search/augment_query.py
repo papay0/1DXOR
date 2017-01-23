@@ -5,7 +5,8 @@
 import sys
 
 from SPARQLWrapper import SPARQLWrapper, JSON
-from query_helpers import to_query
+import numpy
+from query_helpers import argv_to_query
 
 SPARQL_CLIENT = SPARQLWrapper("http://localhost:3030/Filmographie_instances_saturee/sparql")
 
@@ -19,11 +20,45 @@ def augment(query):
         """
 
         instances = set()
-        query_lst = list(query)
+        query_lst = query
         for word_id, word1 in enumerate(query_lst):
             for word2 in list(query)[word_id+1:]:
                 instances |= find_linked_instances(word1, word2)
+                a = find_linked_third_strategy(word1, word2)
+                print(a)
+                instances |= a
         return instances
+
+    def find_linked_third_strategy(word1, word2):
+        """ find all words which are of type word1 """
+        linked = set()
+        SPARQL_CLIENT.setQuery(
+	    """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+	    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	    SELECT ?label
+	    WHERE {
+	      ?typeOrLink1 rdfs:label $label1.
+	      ?typeOrLink2 rdfs:label $label2.
+	      FILTER(regex(?label1, "^"""+word1+"""$") && regex(lang(?label1),"^$|fr")).
+	      FILTER(regex(?label2, "^"""+word2+"""$") && regex(lang(?label2),"^$|fr")).
+	      {
+		?object rdf:type $typeOrLink1.
+		?object ?pred ?typeOrLink2
+	      } UNION
+	      {
+		?object rdf:type $typeOrLink2.
+		?object ?pred ?typeOrLink1
+	      }.
+	      ?object rdfs:label ?label
+	    }
+	    LIMIT 25""")
+
+        SPARQL_CLIENT.setReturnFormat(JSON)
+        results = SPARQL_CLIENT.query().convert()
+        for result in results["results"]["bindings"]:
+            linked.add(result["label"]["value"])
+
+        return linked
 
     def find_linked_instances(word1, word2):
         """ find all words which associates the two given words in semantic triples """
@@ -83,15 +118,32 @@ def augment(query):
 
         return synonyms
 
-    new_query = set()
-    new_query |= find_all_linked_instances(query)
+    linked = find_all_linked_instances(query)
+    synonyms = set()
+    for word in query:
+        synonyms |= find_synonyms(word)
+
+    new_query = []
+    added_words = set()
 
     for word in query:
-        synonyms = find_synonyms(word)
-        new_query |= synonyms
+        if word not in added_words:
+            new_query.append((word, 1))
+            added_words.add(word)
 
-    return new_query
+    for word in synonyms:
+        if word not in added_words:
+            new_query.append((word, 1))
+            added_words.add(word)
+
+    for word in linked:
+        if word not in added_words:
+            new_query.append((word, 1/len(linked)))
+            added_words.add(word)
+
+
+    return numpy.rec.array(new_query, dtype=[('words', object), ('weights', 'f4')])
 
 
 if __name__ == "__main__":
-    print(augment(to_query(sys.argv)))
+    print(augment(argv_to_query(sys.argv)))

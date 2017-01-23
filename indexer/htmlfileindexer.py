@@ -39,9 +39,9 @@ class HTMLFileIndexer:
 
 
     def stemAndCount(self, text):
-        words = self.tokenizer.tokenize(text)
-        stems = [self.stemmer.stem(word).lower() for word in words]
-        filteredStems = [stem for stem in stems if stem not in self.stopWords and stem[0] != "_"]
+        words = self.tokenizer.tokenize(text.lower())
+        stems = [self.stemmer.stem(word).lower() for word in words if word not in self.stopWords]
+        filteredStems = [stem for stem in stems if stem[0] != "_"]
         return dict(Counter(filteredStems))
 
     def tokenize(self, text):

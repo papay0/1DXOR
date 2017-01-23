@@ -57,5 +57,5 @@ if __name__ == '__main__':
     # db.documents.ensure_index('documents', unique=True)
     db.documents.insert(documents)
     db.words.insert(words)
-    
+
     print("Indexing Done !")
