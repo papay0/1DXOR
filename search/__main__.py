@@ -19,12 +19,31 @@ def compute_recall(scores, ground_truth):
     relevant_selected = [score for score in scores if score[0] in relevant_documents]
     return len(relevant_selected)/len(relevant_documents)
 
+def select(choices, default, message):
+    """ Make a choice from a selection """
+    res = None
+    while res not in choices:
+        print(message +" ["+ "/".join([str(w)+("*" if w == default else "") for w in choices])+"]")
+        res = input()
+        if res == "":
+            return default
+    return res
+
+
 def main(query):
     """ Make a search using program input as base query """
     search_engine = SearchEngine(augment, stem_query, "localhost:27017")
     search_engine.search(query)
     results = search_engine.get_results()
-    print(results.get_scores("robertson", "scalar", True))
+    tfs = ["simple", "normalized", "robertson"]
+    dists = ["scalar", "dice", "cosinus", "jaccard"]
+
+
+    tf = select(tfs, "normalized", "TF method")
+    dist = select(dists, "scalar", "Distance method")
+    idf = select(["Y", "N"], "Y", "Use idf") == "Y"
+
+    print(results.get_scores(tf, dist, idf))
 
 
 if __name__ == "__main__":

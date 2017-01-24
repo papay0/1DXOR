@@ -41,7 +41,6 @@ class SearchResult(object):
         Q = self.query.weights[:]
         if use_idf:
             Ds = Ds*self.idf
-            Q = Q*self.idf
 
         scores = []
         for doc_id, doc_name in enumerate(self._doc_names):
@@ -108,11 +107,13 @@ class SearchEngine(object):
     def _build_documents_vectors(self):
         """ build a match matrix """
         documents_vectors = dict()
+        doc_index = self.index_db["documents"].find({})
+        for doc in doc_index:
+            documents_vectors[doc["name"]] = np.zeros([self._query_size()])
+
         for word_index, (_, matches) in enumerate(self._results):
             for match in matches:
                 doc_name = match["name"]
-                if doc_name not in documents_vectors:
-                    documents_vectors[doc_name] = np.zeros([self._query_size()])
                 documents_vectors[doc_name][word_index] = match["count"]
         return documents_vectors
 

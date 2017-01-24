@@ -23,8 +23,12 @@ def augment(query):
         query_lst = query
         for word_id, word1 in enumerate(query_lst):
             for word2 in list(query)[word_id+1:]:
-                instances |= find_linked_instances(word1, word2)
-                a = find_linked_third_strategy(word1, word2)
+                w1 = " .*".join(word1.split())
+                w2 = " .*".join(word2.split())
+                print(w1)
+                print(w2)
+                instances |= find_linked_instances(w1, w2)
+                a = find_linked_third_strategy(w1, w2)
                 print(a)
                 instances |= a
         return instances
@@ -51,7 +55,7 @@ def augment(query):
 	      }.
 	      ?object rdfs:label ?label
 	    }
-	    LIMIT 25""")
+	    """)
 
         SPARQL_CLIENT.setReturnFormat(JSON)
         results = SPARQL_CLIENT.query().convert()
@@ -130,17 +134,16 @@ def augment(query):
         if word not in added_words:
             new_query.append((word, 1))
             added_words.add(word)
-
+ 
     for word in synonyms:
         if word not in added_words:
-            new_query.append((word, 1))
+            new_query.append((word, 0.2))
             added_words.add(word)
 
     for word in linked:
         if word not in added_words:
-            new_query.append((word, 1/len(linked)))
+            new_query.append((word, max(0.5, 0.8/len(linked))))
             added_words.add(word)
-
 
     return numpy.rec.array(new_query, dtype=[('words', object), ('weights', 'f4')])
 

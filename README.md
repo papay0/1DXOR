@@ -1,10 +1,7 @@
 Welcome to 1DXOR!
 ===================
 
-- IN DEV -
-==========
-
-Installation
+Prerequisites
 -------------
 > **What do you need?**
 >
@@ -12,23 +9,19 @@ Installation
 > - python3
 > - BeautifulSoup
 > - nltk
-> - node.js
 
-Run it
-------
+Installation
+------------
 
-```
+```bash
 $ git clone https://github.com/papay0/1DXOR.git
 $ cd 1DXOR
 $ npm install
-$ npm run away
-Go to http://0.0.0.0:4000/
+$ npm run indexing
 ```
 
 Use it
 ------
-
-Go to http://0.0.0.0:4000/, type a sentence into the search bar, select the way you want to search (normal, IDF) and enjoy the result.
 
 MongoDB
 -------
@@ -46,9 +39,10 @@ Schema Database
 ---------------
 
 documents:
-```
+```javascript
 {
-    "_id" : "Document1",
+    "_id" : "0az3e1aze4864aeaze45zac48",
+		"name": "D11.html",
     "words" : {
         "day" : 1,
         "over" : 2,
@@ -57,7 +51,8 @@ documents:
     }
 },
 {
-    "_id" : "Document2",
+    "_id" : "c1a8ze4a8448a4f8484a84z8r",
+		"name": "D12.html",
     "words" : {
         "computer" : 3,
         "network" : 1,
@@ -67,21 +62,20 @@ documents:
 ```
 
 words:
-```
+```javascript
 {
-    "_id" : "computer",
+    "_id" : "c3a9ze5a8449a5f8485a85z9r",
+		"word": "georg"
     "documents" : {
         "Document1":1,
         "Document2": 12
     }
 },
 {
-    "_id" : "sunrise",
+    "_id" : "c15a9za5a8449a58485a70z9r",
+    "word" : "sunris",
     "documents" : {
         "Document1":15
     }
 }
 ```
-
-TODO
--------------
